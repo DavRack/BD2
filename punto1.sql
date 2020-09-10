@@ -43,27 +43,41 @@ INSERT INTO venta VALUES(99,60,2);
 END;
 /
 
+
 DECLARE 
     TYPE lista IS TABLE OF varchar(50) INDEX BY BINARY_INTEGER;
     milista lista;
     
+    nombres lista;
+    
+    i NUMBER;
     CURSOR tupla IS
-    SELECT distinct codpv, codproducto FROM venta order by codpv;
+    SELECT distinct proveedor.nompv, venta.codpv, venta.codproducto
+    FROM venta join proveedor on venta.codpv=proveedor.codpv order by codpv;
+    
     codi venta.codpv%TYPE;
     product venta.codproducto%TYPE;
+    nombre proveedor.nompv%TYPE;
 BEGIN
     OPEN tupla;
     LOOP 
-    FETCH tupla INTO codi,product;
+    FETCH tupla INTO nombre,codi,product;
     EXIT WHEN tupla%NOTFOUND;
     -- generar una lista con los productos que cada vendedor vende
     if milista.exists(codi) then
         milista(codi) := milista(codi) || ',' || cast(product as varchar);
     else
         milista(codi):= cast(product as varchar);
+        nombres(codi):= nombre;
     end if;
     END LOOP;
-    
+    i := milista.FIRST;
+    WHILE i IS NOT NULL LOOP
+        DBMS_OUTPUT.PUT_LINE('nombre: '||nombres(i) || ' Posicion:'|| i || ' Valor: ' || milista(i));
+        i := milista.NEXT(i);
+    END LOOP;
+
     CLOSE tupla;
 END;
 /
+    
