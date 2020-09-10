@@ -1,1 +1,38 @@
 # BD2
+SET SERVEROUTPUT ON
+
+CREATE TABLE proveedor(
+codpv NUMBER(8) PRIMARY KEY,
+nompv VARCHAR2(10) NOT NULL
+);
+
+BEGIN
+INSERT INTO proveedor VALUES(10,'Lisy');
+INSERT INTO proveedor VALUES(20,'Kirsty');
+INSERT INTO proveedor VALUES(30,'Biorky');
+INSERT INTO proveedor VALUES(40,'Wimpy');
+INSERT INTO proveedor VALUES(50,'Chucky');
+INSERT INTO proveedor VALUES(60,'Chubby');
+END;
+/
+
+CREATE TABLE venta(
+idv NUMBER(8) PRIMARY KEY,
+codpv NUMBER(8) REFERENCES proveedor NOT NULL,
+codproducto NUMBER(8) NOT NULL
+);
+
+BEGIN
+INSERT INTO venta VALUES(3,10,1);
+INSERT INTO venta VALUES(5,10,2);
+INSERT INTO venta VALUES(7,10,5);
+INSERT INTO venta VALUES(17,10,2);
+INSERT INTO venta VALUES(8,20,2);
+INSERT INTO venta VALUES(1,20,1);
+INSERT INTO venta VALUES(9,20,5);
+INSERT INTO venta VALUES(31,20,1);
+INSERT INTO venta VALUES(33,20,1);
+INSERT INTO venta VALUES(10,30,1);
+END;
+/
+git push origin master
