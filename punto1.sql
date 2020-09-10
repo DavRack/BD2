@@ -1,3 +1,5 @@
+drop table proveedor;
+drop table venta;
 CREATE TABLE proveedor(
 codpv NUMBER(8) PRIMARY KEY,
 nompv VARCHAR2(10) NOT NULL
@@ -30,7 +32,38 @@ INSERT INTO venta VALUES(9,20,5);
 INSERT INTO venta VALUES(31,20,1);
 INSERT INTO venta VALUES(33,20,1);
 INSERT INTO venta VALUES(10,30,1);
+INSERT INTO venta VALUES(11,30,2);
+INSERT INTO venta VALUES(12,40,2);
+INSERT INTO venta VALUES(2,40,1);
+INSERT INTO venta VALUES(22,40,2);
+INSERT INTO venta VALUES(28,50,2);
+INSERT INTO venta VALUES(21,50,1);
+INSERT INTO venta VALUES(29,50,5);
+INSERT INTO venta VALUES(99,60,2);
 END;
 /
 
-SELECT distinct codpv,codproducto FROM venta order by codpv;
+DECLARE 
+    TYPE lista IS TABLE OF varchar(50) INDEX BY BINARY_INTEGER;
+    milista lista;
+    
+    CURSOR tupla IS
+    SELECT distinct codpv, codproducto FROM venta order by codpv;
+    codi venta.codpv%TYPE;
+    product venta.codproducto%TYPE;
+BEGIN
+    OPEN tupla;
+    LOOP 
+    FETCH tupla INTO codi,product;
+    EXIT WHEN tupla%NOTFOUND;
+    -- generar una lista con los productos que cada vendedor vende
+    if milista.exists(codi) then
+        milista(codi) := milista(codi) || ',' || cast(product as varchar);
+    else
+        milista(codi):= cast(product as varchar);
+    end if;
+    END LOOP;
+    
+    CLOSE tupla;
+END;
+/
